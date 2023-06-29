@@ -1,0 +1,43 @@
+Recursive query:
+SELECT SYS_CONNECT_BY_PATH(nextprogram, '->') "Path" FROM programsequence WHERE currentprogram= 'SSC' START WITH nextprogram = 'SOFTWARE ENGINEER' CONNECT BY NOCYCLE PRIOR currentprogram = nextprogram ;
+
+
+
+Trigger:
+create trigger update_mentor
+AFTER insert on student
+begin
+SET NOCOUNT ON;
+DECLARE @username varchar(20)
+SELECT @username = INSERTED.username
+FROM INSERTED
+DECLARE @program varchar2(20)
+SELECT @program=INSERTED.currentlevel
+FROM INSERTED
+insert into mentor(name,password,username,program) values ('admin','pass@123', @username,@program)
+end;
+/
+try {
+    	Class.forName("oracle.jdbc.OracleDriver"); 
+    	System.out.print("ok");
+		Connection con=DriverManager.getConnection("jdbc:oracle:thin:@218.248.0.7:1521:RDBMS","it20737123","vasavi");
+		String sql = "SELECT distinct SYS_CONNECT_BY_PATH(nextprogram, '->') \"Path\" FROM programsequence WHERE currentprogram= 'SSC' START WITH nextprogram = 'SOFTWARE ENGINEER' CONNECT BY NOCYCLE PRIOR currentprogram = nextprogram ";
+		PreparedStatement statement = con.prepareStatement(sql);
+		ResultSet rs=statement.executeQuery();
+		while(rs.next())
+		{
+			String paths=rs.getString("path");
+			//System.out.println(paths);
+			//System.out.print("ok");
+			//jLabel_allpaths = new javax.swing.JLabel();
+			
+			jLabel_allpaths.setText(paths);
+			
+		}
+    }
+    	catch(Exception e)
+        {
+            System.out.println(e);
+        }
+    
+    }
